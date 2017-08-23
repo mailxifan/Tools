@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
  * Created by zhangqilin
  * email:mailxifan@126.com
  * date:2017/8/23
+ * 文件操作工具类
  */
 
 public class FileUtils {
