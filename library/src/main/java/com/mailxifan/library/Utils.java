@@ -2,6 +2,10 @@ package com.mailxifan.library;
 
 import android.text.TextUtils;
 
+import java.text.DecimalFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by zhangqilin
  * email:mailxifan@126.com
@@ -53,5 +57,81 @@ public class Utils {
         }
         lastClickTime = time;
         return false;
+    }
+
+    /**
+     * 将Unicode码转换成中文字符
+     */
+    public static String convert(String utfString) {
+        StringBuilder sb = new StringBuilder();
+        int i = -1;
+        int pos = 0;
+
+        while ((i = utfString.indexOf("\\u", pos)) != -1) {
+            sb.append(utfString.substring(pos, i));
+            if (i + 5 < utfString.length()) {
+                pos = i + 6;
+                sb.append((char) Integer.parseInt(utfString.substring(i + 2, i + 6), 16));
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 检查是否有中文
+     *
+     * @param str
+     * @return
+     */
+    public static boolean checkString(String str) {
+        boolean res = false;
+        if (str != null) {
+            for (int i = 0; i < str.length(); i++) {
+                // 只要字符串中有中文则为中文
+                if (!checkChar(str.charAt(i))) {
+                    res = true;
+                    break;
+                } else {
+                    res = false;
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 英文占1byte，非英文（可认为是中文）占2byte，根据这个特性来判断字符
+     */
+    public static boolean checkChar(char ch) {
+        if ((ch + "").getBytes().length == 1) {
+            return true;// 英文
+        } else {
+            return false;// 中文
+        }
+    }
+
+    /**
+     * 是否是数字
+     *
+     * @param str
+     * @return
+     */
+    public static boolean isNumeric(String str) {
+        Pattern pattern = Pattern.compile("[0-9]*");
+        Matcher isNum = pattern.matcher(str);
+        if (!isNum.matches()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 保留两位小数
+     *
+     * @return
+     */
+    public static String doubleFormat(String value) {
+        DecimalFormat df = new DecimalFormat("######.##");
+        return df.format(Double.parseDouble(value));
     }
 }
